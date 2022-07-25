@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import model.exceptions.DomainException;
+
 public class Reservation {
 
 	private Integer roomNumber;
@@ -17,6 +19,10 @@ public class Reservation {
 																				// as datas para dia, mes e ano
 
 	public Reservation(Integer roomNumber, Date checkIn, Date checkOut) {
+
+		if (!checkOut.after(checkIn)) { 
+			throw new DomainException("Error in reservation: Check-out date must be after check-in date");
+		}
 		this.roomNumber = roomNumber;
 		this.checkIn = checkIn;
 		this.checkOut = checkOut;
@@ -48,13 +54,15 @@ public class Reservation {
 																	// para dias.
 	}
 
-	public void updateDate(Date checkIn, Date checkOut) {
+	public void updateDate(Date checkIn, Date checkOut) throws DomainException {
 		Date now = new Date(); // instanciamos um objeto do tipo Date com a data de hoje
-		if (checkIn.before(now) || checkOut.before(now)) { // checamos se o se as datas novas inseridas são anteriores aos primeiro chekin e checkout
-			throw new IllegalArgumentException("Error in reservation: Reservation dates for update must be future dates");
-		}else if (!checkOut.after(checkIn)) { // checamos nocamente se a data de checkout é superior á data de chekin,
-												// caso não seja, informamos o erro.
-			throw new IllegalArgumentException("Error in reservation: Check-out date must be after check-in date");
+		if (checkIn.before(now) || checkOut.before(now)) { // checamos se o se as datas novas inseridas são anteriores
+															// aos primeiro chekin e checkout
+			throw new DomainException("Error in reservation: Reservation dates for update must be future dates");
+		}
+		if (!checkOut.after(checkIn)) { // checamos nocamente se a data de checkout é superior á data de chekin,
+										// caso não seja, informamos o erro.
+			throw new DomainException("Error in reservation: Check-out date must be after check-in date");
 		}
 
 		this.checkIn = checkIn;
