@@ -48,18 +48,17 @@ public class Reservation {
 																	// para dias.
 	}
 
-	public String updateDate(Date checkIn, Date checkOut) {
+	public void updateDate(Date checkIn, Date checkOut) {
 		Date now = new Date(); // instanciamos um objeto do tipo Date com a data de hoje
 		if (checkIn.before(now) || checkOut.before(now)) { // checamos se o se as datas novas inseridas são anteriores aos primeiro chekin e checkout
-			return "Error in reservation: Reservation dates for update must be future dates";
+			throw new IllegalArgumentException("Error in reservation: Reservation dates for update must be future dates");
 		}else if (!checkOut.after(checkIn)) { // checamos nocamente se a data de checkout é superior á data de chekin,
 												// caso não seja, informamos o erro.
-			return "Error in reservation: Check-out date must be after check-in date";
+			throw new IllegalArgumentException("Error in reservation: Check-out date must be after check-in date");
 		}
 
 		this.checkIn = checkIn;
 		this.checkOut = checkOut;
-		return null;
 	}
 
 	@Override
